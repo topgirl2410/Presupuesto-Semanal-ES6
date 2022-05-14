@@ -22,6 +22,12 @@ class Presupuesto {
         this.restante = Number(presupuesto);
         this.gastos = [];
     }
+
+    nuevoGasto(gasto) {
+        this.gastos = [...this.gastos, gasto];
+
+        console.log(this.gastos)
+    }
 }
 
 class UI {
@@ -113,5 +119,7 @@ function agregarGasto(e) {
         id: Date.now()
     };
 
-    console.log(gasto)
+    // Añade un nuevo gasto
+    presupuesto.nuevoGasto(gasto);
+
 }
