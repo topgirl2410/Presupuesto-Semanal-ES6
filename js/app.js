@@ -25,8 +25,16 @@ class Presupuesto {
 
     nuevoGasto(gasto) {
         this.gastos = [...this.gastos, gasto];
+        this.calcularRestante();
+    }
 
-        console.log(this.gastos)
+    calcularRestante() {
+        const gastado = this.gastos.reduce((total, gasto) => total + gasto.cantidad, 0);
+
+        this.restante = this.presupuesto - gastado;
+
+        console.log(this.restante);
+
     }
 }
 
@@ -62,7 +70,51 @@ class UI {
         setTimeout(() => {
             divMensaje.remove();
         }, 3000);
+    }
 
+    agregarGastoListado(gastos) {
+        this.limpiarHTML();  // Elimina el HTML previo
+
+        // Iterar sobre los gastos 
+        gastos.forEach(gasto => {
+
+            const { cantidad, nombre, id } = gasto;
+
+            // Crear un LI
+            const nuevoGasto = document.createElement('li');
+            nuevoGasto.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+            //nuevoGasto.setAttribute('data-id', id); // Antigua forma de hacerlo
+            nuevoGasto.dataset.id = id;  // Nueva forma de hacerlo ES6
+
+
+
+            // Agregar el HTML del gasto
+            nuevoGasto.innerHTML = `${nombre} <span class="badge badge-primary badge-pill">€ ${cantidad}</span>`;
+
+            // Boton para borrar el gasto
+            const btnBorrar = document.createElement('button');
+            btnBorrar.classList.add('btn', 'btn-danger', 'borrar-gasto');
+            btnBorrar.innerHTML = 'Borrar Gasto &times';
+
+            nuevoGasto.appendChild(btnBorrar);
+
+            // Agregar al HTML
+            gastoListado.appendChild(nuevoGasto);
+
+        });
+    }
+
+    // Limpiar HTML 
+    limpiarHTML() {
+        while (gastoListado.firstChild) {
+            gastoListado.removeChild(gastoListado.firstChild);
+        }
+    }
+
+    // Actualizar el restante en el HTML
+    actualizarRestante(restante) {
+        document.querySelector('#restante').textContent = restante;
     }
 }
 
@@ -86,10 +138,10 @@ function preguntarPresupuesto() {
     // Presupuesto valido
     presupuesto = new Presupuesto(presupuestoUsuario);
 
-
     ui.insertarPresupuesto(presupuesto);
-}
 
+
+}
 
 // Añade Gastos
 
@@ -125,6 +177,11 @@ function agregarGasto(e) {
     // Mensaje de todo va bien
     ui.imprimirAlerta('Gasto agregado Correctamente');
 
+    // Imprimir los gastos en el HTML
+    const { gastos, restante } = presupuesto;
+    ui.agregarGastoListado(gastos);
+
+    ui.actualizarRestante(restante);
 
     // Reinicia el formulario 
     formulario.reset();
