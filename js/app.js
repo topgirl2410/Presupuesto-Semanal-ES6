@@ -4,17 +4,15 @@
 const formulario = document.querySelector('#agregar-gasto');
 const gastoListado = document.querySelector('#gastos ul');
 
-
-
 // Eventos
 
 eventListeners();
 
 function eventListeners() {
-    document.addEventListener('DOMContentLoaded', preguntarPresupuesto)
+    document.addEventListener('DOMContentLoaded', preguntarPresupuesto);
+
+    formulario.addEventListener('submit', agregarGasto);
 };
-
-
 
 // Clases 
 
@@ -30,16 +28,16 @@ class UI {
     insertarPresupuesto(cantidad) {
 
         // Extreayendo los valores
-        const { presupuesto, restante} = cantidad;
+        const { presupuesto, restante } = cantidad;
 
         // Agregamos los valores al HTML
         document.querySelector('#total').textContent = presupuesto;
         document.querySelector('#restante').textContent = restante;
     }
- }
-
+}
 
 // Instanciar 
+
 const ui = new UI();
 let presupuesto;
 
@@ -55,14 +53,28 @@ function preguntarPresupuesto() {
         window.location.reload();
     }
 
-    console.log(Number(presupuestoUsuario));
-
     // Presupuesto valido
-
     presupuesto = new Presupuesto(presupuestoUsuario);
-    //console.log(presupuesto);
+
 
     ui.insertarPresupuesto(presupuesto);
 }
 
 
+// Añade Gastos
+
+function agregarGasto(e) {
+    e.preventDefault();
+
+    // Leer los datos del formulario
+    const nombre = document.querySelector('#gasto').value;
+    const cantidad = document.querySelector('#cantidad').value;
+
+
+    // Validar
+    if (nombre === ''
+        || cantidad === '') {
+          console.log('Ambos campos son obligatorios');  
+    }
+
+}
